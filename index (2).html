@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>กฎใช้ชีวิตร่วมกัน</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>
+/* ══════════ ธีม ══════════ */
+:root{
+  --green:#06C755; --green-d:#04A445; --red:#E03131; --amber:#F08C00;
+  --bg:#F3F5F7; --card:#FFFFFF; --ink:#1F2933; --muted:#8A94A6; --line:#E7EBF0;
+  --shadow:0 1px 3px rgba(16,24,40,.06),0 6px 16px rgba(16,24,40,.05);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"LINE Seed Sans TH","Noto Sans Thai","Sarabun",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px;line-height:1.55;padding-bottom:86px}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font-family:inherit;font-size:15px}
+
+/* ══════════ หัว ══════════ */
+.top{background:linear-gradient(135deg,var(--green),#00A94F);color:#fff;padding:18px 18px 22px;
+  border-radius:0 0 22px 22px;box-shadow:0 4px 14px rgba(6,199,85,.18)}
+.top .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.top .hi{font-size:13px;opacity:.9}
+.top .name{font-size:19px;font-weight:700;letter-spacing:.2px}
+.top .date{font-size:12px;opacity:.9;margin-top:2px}
+.badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
+  padding:8px 12px;border-radius:14px;text-align:right;min-width:104px}
+.badge .l{font-size:10px;opacity:.9}
+.badge .v{font-size:19px;font-weight:800;line-height:1.2}
+
+/* ══════════ โครง ══════════ */
+.wrap{padding:14px 14px 0;max-width:640px;margin:0 auto}
+.card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:14px;margin-bottom:11px}
+.h{display:flex;align-items:flex-start;gap:11px}
+.ic{font-size:24px;line-height:1;width:30px;text-align:center;flex:none;margin-top:2px}
+.t{font-weight:700;font-size:15px}
+.s{font-size:11.5px;color:var(--muted);margin-top:1px}
+.pill{font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;white-space:nowrap;flex:none}
+.p-ok{background:#E7F9EE;color:#0B8043}.p-bad{background:#FDECEC;color:var(--red)}
+.p-ex{background:#EEF2FF;color:#4C6EF5}.p-idle{background:#F1F3F5;color:var(--muted)}
+.sec{font-size:12px;font-weight:700;color:var(--muted);margin:16px 4px 8px;letter-spacing:.4px}
+
+/* ══════════ ปุ่ม/ตัวนับ ══════════ */
+.ctl{margin-top:12px;display:flex;align-items:center;gap:10px}
+.step{display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;flex:none}
+.step button{width:44px;height:42px;font-size:21px;font-weight:600;color:var(--green);background:#fff}
+.step button:disabled{color:#CBD2DA}
+.step .n{width:52px;text-align:center;font-weight:800;font-size:17px;border-left:1px solid var(--line);border-right:1px solid var(--line);line-height:42px}
+.unit{font-size:12px;color:var(--muted)}
+.btn{flex:1;height:44px;border-radius:12px;background:var(--green);color:#fff;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:6px}
+.btn:active{background:var(--green-d)}
+.btn.ghost{background:#F1F3F5;color:var(--ink)}
+.btn.done{background:#E7F9EE;color:#0B8043;border:1px solid #B7EBC9}
+.btn.sm{height:38px;font-size:14px;border-radius:10px;flex:none;padding:0 16px}
+.btn.wide{width:100%}
+.btn:disabled{opacity:.55}
+.dots{display:flex;gap:5px;margin-top:10px;align-items:center}
+.dot{width:22px;height:7px;border-radius:4px;background:#E7EBF0}
+.dot.on{background:var(--green)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.chip{background:#F1F3F5;border-radius:10px;padding:6px 10px;font-size:12.5px;display:flex;align-items:center;gap:6px}
+.chip b{font-weight:800}
+.chip .x{color:var(--muted);font-size:15px;padding:0 2px}
+.note{font-size:11.5px;color:var(--muted);margin-top:9px}
+.warnbar{background:#FFF4E6;border:1px solid #FFD8A8;color:#B35C00;border-radius:12px;
+  padding:10px 12px;font-size:12.5px;margin-bottom:11px}
+.exbar{background:#EEF2FF;border:1px solid #C7D2FE;color:#3B5BDB;border-radius:12px;
+  padding:10px 12px;font-size:12.5px;margin-bottom:11px}
+
+/* ══════════ แถบเลือก ══════════ */
+.seg{display:flex;background:#E9EDF1;border-radius:12px;padding:3px;gap:3px;margin-bottom:12px}
+.seg button{flex:1;height:34px;border-radius:9px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
+/* ══════════ ปฏิทิน ══════════ */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal .dow{text-align:center;font-size:10.5px;color:var(--muted);font-weight:700;padding:2px 0}
+.cell{aspect-ratio:1/1.06;border-radius:10px;background:#F6F8FA;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-size:12.5px;gap:2px;border:1px solid transparent}
+.cell.empty{background:transparent}
+.cell.ok{background:#E7F9EE;color:#0B8043}
+.cell.bad{background:#FDECEC;color:var(--red)}
+.cell.ex{background:#EEF2FF;color:#4C6EF5}
+.cell.today{border-color:var(--green)}
+.cell .amt{font-size:9.5px;font-weight:800}
+.calnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.calnav button{width:36px;height:36px;border-radius:10px;background:#F1F3F5;font-size:17px}
+.calnav .m{font-weight:700}
+
+/* ══════════ ตาราง/รายการ ══════════ */
+.kv{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13.5px;border-bottom:1px dashed var(--line)}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--muted)}
+.kv .v{font-weight:700}
+.kv .v.red{color:var(--red)}.kv .v.green{color:#0B8043}.kv .v.amber{color:var(--amber)}
+.bar{height:12px;border-radius:7px;background:#EDF0F3;overflow:hidden;margin:10px 0 6px}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--green),#37D97F);border-radius:7px;transition:width .5s}
+.big{font-size:27px;font-weight:800;letter-spacing:-.5px}
+.form{display:flex;flex-direction:column;gap:9px;margin-top:11px}
+.form label{font-size:12px;color:var(--muted);font-weight:600}
+.form input,.form select{width:100%;height:42px;border:1px solid var(--line);border-radius:11px;padding:0 12px;background:#fff}
+.row2{display:flex;gap:9px}.row2>*{flex:1}
+.mini{font-size:11.5px;color:var(--muted)}
+
+/* ══════════ เมนูล่าง ══════════ */
+.nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
+  display:flex;padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:40}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  font-size:10.5px;color:var(--muted);padding:5px 0;font-weight:600}
+.nav button .e{font-size:19px;line-height:1}
+.nav button.on{color:var(--green)}
+
+/* ══════════ อื่นๆ ══════════ */
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:100px;background:#1F2933;color:#fff;
+  padding:11px 17px;border-radius:12px;font-size:13.5px;z-index:99;opacity:0;transition:.25s;
+  pointer-events:none;max-width:88%;text-align:center}
+#toast.show{opacity:1;bottom:110px}
+#load{position:fixed;inset:0;background:rgba(243,245,247,.75);display:flex;align-items:center;
+  justify-content:center;z-index:90;backdrop-filter:blur(2px)}
+.spin{width:34px;height:34px;border:3px solid #D8DEE5;border-top-color:var(--green);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hide{display:none!important}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:80;display:flex;align-items:flex-end}
+.sheet>div{background:#fff;width:100%;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:80vh;overflow:auto}
+.sheet h3{margin:0 0 4px;font-size:16px}
+</style>
+</head>
+<body>
+
+<!-- ╔══════ ตั้งค่า 2 บรรทัดนี้ก่อนใช้งาน ══════╗ -->
+<script>
+  const LIFF_ID = 'ใส่_LIFF_ID_ตรงนี้';                 // เช่น 2001234567-AbCdEfGh
+  const API_URL = 'ใส่_URL_ของ_APPS_SCRIPT_ตรงนี้';      // เช่น https://script.google.com/macros/s/AKfy.../exec
+</script>
+<!-- ╚═════════════════════════════════════════╝ -->
+
+<div class="top">
+  <div class="row">
+    <div>
+      <div class="hi">🤝 กฎใช้ชีวิตร่วมกัน</div>
+      <div class="name" id="hName">กำลังโหลด…</div>
+      <div class="date" id="hDate"></div>
+    </div>
+    <div class="badge">
+      <div class="l" id="hLabel">ค่าปรับวันนี้</div>
+      <div class="v"><span id="hFine">0</span> ฿</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="pgToday"></div>
+  <div id="pgHistory" class="hide"></div>
+  <div id="pgFines" class="hide"></div>
+  <div id="pgFund" class="hide"></div>
+</div>
+
+<div class="nav">
+  <button data-tab="today"   class="on"><span class="e">✅</span>วันนี้</button>
+  <button data-tab="history"><span class="e">📅</span>ย้อนหลัง</button>
+  <button data-tab="fines"><span class="e">💸</span>ค่าปรับ</button>
+  <button data-tab="fund"><span class="e">✈️</span>กองเงิน</button>
+</div>
+
+<div id="toast"></div>
+<div id="load"><div class="spin"></div></div>
+
+<script>
+/* ═══════════ สถานะรวม ═══════════ */
+const S = { boot:null, idToken:null, tab:'today', histMonth:null, histMember:null,
+            hist:null, finesScope:'week', finesData:null, fund:null, exList:[] };
+
+const $  = s => document.querySelector(s);
+const el = (h) => { const d=document.createElement('div'); d.innerHTML=h.trim(); return d.firstElementChild; };
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num = n => Number(n||0).toLocaleString('en-US');
+const TH_M = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const thDate = d => { const p=String(d).split('-'); return +p[2]+' '+TH_M[+p[1]-1]+' '+(+p[0]+543-2500); };
+const thMonth = ym => { const p=String(ym).split('-'); return TH_M[+p[1]-1]+' '+(+p[0]+543); };
+
+function loading(on){ $('#load').classList.toggle('hide', !on); }
+let toastT;
+function toast(msg, ms=2600){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'), ms);
+}
+
+/* ═══════════ คุยกับหลังบ้าน ═══════════ */
+async function api(action, payload){
+  const res = await fetch(API_URL, {
+    method:'POST', redirect:'follow',
+    body: JSON.stringify({ action, idToken: S.idToken, payload: payload||{} })
+  });
+  const j = await res.json();
+  if(!j.ok) throw new Error(j.error || 'เกิดข้อผิดพลาด');
+  return j;
+}
+async function call(action, payload, quiet){
+  if(!quiet) loading(true);
+  try { return await api(action, payload); }
+  catch(e){ toast('⚠️ ' + e.message, 3600); throw e; }
+  finally { if(!quiet) loading(false); }
+}
+
+/* ═══════════ เริ่มระบบ ═══════════ */
+(async function init(){
+  try{
+    await liff.init({ liffId: LIFF_ID });
+    if(!liff.isLoggedIn()){ liff.login({ redirectUri: location.href }); return; }
+    S.idToken = liff.getIDToken();
+    if(!S.idToken) throw new Error('ไม่ได้รับ ID token — ตรวจ scope openid ของ LIFF');
+    const b = await api('bootstrap');
+    S.boot = b; S.histMonth = b.today.slice(0,7); S.histMember = b.me.memberId;
+    const p = new URLSearchParams(location.search);
+    const tab = p.get('tab') || 'today';
+    renderHeader(); switchTab(tab);
+  }catch(e){
+    loading(false);
+    $('#pgToday').innerHTML =
+      '<div class="card"><div class="t">เปิดระบบไม่ได้</div><div class="s" style="margin-top:8px">'+esc(e.message)+'</div>'+
+      '<div class="note">ตรวจว่ากรอก LIFF_ID กับ API_URL ในไฟล์ index.html ครบ และ Deploy Apps Script แบบ "Anyone" แล้ว</div></div>';
+  } finally { loading(false); }
+})();
+
+/* ═══════════ หัวจอ ═══════════ */
+function renderHeader(){
+  const b=S.boot;
+  $('#hName').textContent = b.me.name + (b.me.isAdmin ? ' 👑' : '');
+  $('#hDate').textContent = thDate(b.today) + ' · วันในระบบเริ่ม ' + b.cutoffHour + ':00';
+  updateHeadFine();
+}
+function updateHeadFine(){
+  const b=S.boot;
+  const t = (b.day?b.day.total:0) + (b.week?b.week.total:0) + (b.month?b.month.total:0);
+  $('#hLabel').textContent='ค่าปรับที่ค้างอยู่';
+  $('#hFine').textContent = num(t);
+}
+
+/* ═══════════ สลับแท็บ ═══════════ */
+document.querySelectorAll('.nav button').forEach(btn=>{
+  btn.onclick = ()=>switchTab(btn.dataset.tab);
+});
+function switchTab(tab){
+  S.tab = tab;
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on', b.dataset.tab===tab));
+  ['today','history','fines','fund'].forEach(t=>{
+    $('#pg'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('hide', t!==tab);
+  });
+  if(tab==='today')   renderToday();
+  if(tab==='history') loadHistory();
+  if(tab==='fines')   loadFines();
+  if(tab==='fund')    loadFund();
+  window.scrollTo(0,0);
+}
+
+/* ═══════════ แท็บ 1 : วันนี้ ═══════════ */
+function logOf(ruleId){
+  return S.boot.logs.filter(l=>l.ruleId===ruleId);
+}
+function dayItem(ruleId){
+  return (S.boot.day.items||[]).find(i=>i.ruleId===ruleId) || null;
+}
+function weekItem(ruleId){
+  return (S.boot.week.items||[]).find(i=>i.ruleId===ruleId) || null;
+}
+
+function renderToday(){
+  const b=S.boot, box=$('#pgToday'); box.innerHTML='';
+
+  if(b.exemptToday){
+    box.appendChild(el('<div class="exbar">🏷️ วันนี้อยู่ในช่วงยกเว้น: <b>'+esc(b.exemptToday.reason)+
+      '</b> ('+thDate(b.exemptToday.startDate)+' – '+thDate(b.exemptToday.endDate)+')</div>'));
+  }
+  box.appendChild(el('<div class="warnbar">⏳ กดได้เฉพาะของวันนี้ ย้อนหลังไม่ได้ · กดผิดแก้คืนได้ภายใน '+
+    b.undoMinutes+' นาที · ไม่กดเลย = ถือว่าผิด</div>'));
+
+  box.appendChild(el('<div class="sec">รายวัน</div>'));
+  b.rules.filter(r=>['BEDTIME','DAILY_CHECK','DAILY_COUNT','SESSION_COUNT'].includes(r.type))
+         .forEach(r=>box.appendChild(ruleCard(r)));
+
+  box.appendChild(el('<div class="sec">รายสัปดาห์</div>'));
+  b.rules.filter(r=>r.type.startsWith('WEEKLY')).forEach(r=>box.appendChild(ruleCard(r)));
+
+  box.appendChild(el('<div class="sec">รายเดือน</div>'));
+  b.rules.filter(r=>r.type==='MONTHLY_COUNT').forEach(r=>box.appendChild(ruleCard(r)));
+
+  const t=b.day.total;
+  box.appendChild(el('<div class="card"><div class="kv"><div class="k">ค่าปรับรายวันของวันนี้</div>'+
+    '<div class="v '+(t?'red':'green')+'">'+num(t)+' บาท</div></div>'+
+    '<div class="kv"><div class="k">โควตาสัปดาห์นี้ (ถ้าจบสัปดาห์ตอนนี้)</div>'+
+    '<div class="v '+(b.week.total?'amber':'green')+'">'+num(b.week.total)+' บาท</div></div>'+
+    '<div class="kv"><div class="k">บุฟเฟต์เดือนนี้</div>'+
+    '<div class="v '+(b.month.total?'amber':'green')+'">'+num(b.month.total)+' บาท</div></div></div>'));
+}
+
+function pillFor(item){
+  if(!item) return '<span class="pill p-idle">—</span>';
+  if(item.status==='exempt') return '<span class="pill p-ex">ยกเว้น</span>';
+  if(item.amount>0) return '<span class="pill p-bad">+'+num(item.amount)+' ฿</span>';
+  if(item.status==='miss') return '<span class="pill p-idle">ยังไม่ทำ</span>';
+  return '<span class="pill p-ok">ผ่าน</span>';
+}
+
+function ruleCard(r){
+  const isWeek = r.type.startsWith('WEEKLY');
+  const item = isWeek ? weekItem(r.ruleId) : dayItem(r.ruleId);
+  const sub = subText(r);
+  const card = el('<div class="card"><div class="h"><div class="ic">'+r.icon+'</div>'+
+    '<div style="flex:1"><div class="t">'+esc(r.name)+'</div><div class="s">'+sub+'</div></div>'+
+    pillFor(item)+'</div><div class="body"></div></div>');
+  card.querySelector('.body').appendChild(control(r, item));
+  return card;
+}
+
+function subText(r){
+  const f = r.fineRate;
+  switch(r.type){
+    case 'BEDTIME': return 'ไม่เกิน '+r.limitValue+' น. · เกินเหมา '+f+' ฿ · ไม่กด = ปรับ '+f+' ฿';
+    case 'DAILY_CHECK': return 'วันละ '+r.limitValue+' ครั้ง · ไม่ทำปรับ '+f+' ฿';
+    case 'DAILY_COUNT': return 'ไม่เกิน '+r.limitValue+' '+r.unitLabel+'/วัน · เกิน'+r.unitLabel+'ละ '+f+' ฿';
+    case 'SESSION_COUNT': return 'ไม่เกิน '+r.limitValue+' '+r.unitLabel+'/ครั้ง · เกิน'+r.unitLabel+'ละ '+f+' ฿';
+    case 'MONTHLY_COUNT': return 'ไม่เกิน '+r.limitValue+' '+r.unitLabel+'/เดือน · เกินครั้งละ '+f+' ฿';
+    case 'WEEKLY_QUOTA_DAYS': return 'ต้องได้ '+r.limitValue+' วัน/สัปดาห์ (ครั้งละ ≥20 นาที) · ขาดวันละ '+f+' ฿';
+    case 'WEEKLY_QUOTA_TIMES': return 'ต้องได้ '+r.limitValue+' ครั้ง/สัปดาห์ · ไม่ถึงปรับ '+f+' ฿';
+  }
+  return '';
+}
+
+function control(r, item){
+  const logs = logOf(r.ruleId);
+  const box  = el('<div class="ctl"></div>');
+
+  /* — เวลานอน — */
+  if(r.type==='BEDTIME'){
+    if(logs.length){
+      box.appendChild(el('<div class="btn done wide">🛌 บันทึกแล้ว ' + esc(logs[0].value) + ' น.</div>'));
+    }else{
+      const b = el('<button class="btn wide">🛌 กดตอนเข้านอน</button>');
+      b.onclick = async ()=>{ await save(r,1); toast('บันทึกเวลานอนแล้ว'); };
+      box.appendChild(b);
+    }
+    return box;
+  }
+
+  /* — เช็กครั้งเดียว/วัน (บอกรัก) — */
+  if(r.type==='DAILY_CHECK'){
+    const done = logs.length && Number(logs[0].value)>0;
+    const b = el('<button class="btn '+(done?'done':'')+' wide">'+(done?'✓ '+esc(r.name)+'แล้ววันนี้':'กดเมื่อ'+esc(r.name)+'แล้ว')+'</button>');
+    if(!done) b.onclick = async ()=>{ await save(r,1); toast('บันทึกแล้ว 💖'); };
+    else b.onclick = ()=>tryUndo(r, 0);
+    box.appendChild(b);
+    return box;
+  }
+
+  /* — วงเหล้า (นับต่อครั้ง) — */
+  if(r.type==='SESSION_COUNT'){
+    const wrap = el('<div style="width:100%"></div>');
+    const add = el('<button class="btn wide">🥂 บันทึกวงที่ดื่ม</button>');
+    add.onclick = ()=>sessionSheet(r);
+    wrap.appendChild(add);
+    if(logs.length){
+      const chips = el('<div class="chips"></div>');
+      logs.forEach((l,i)=>{
+        const c = el('<div class="chip">วงที่ '+(i+1)+' · <b>'+num(l.value)+'</b> '+r.unitLabel+
+          ' <span class="x">✕</span></div>');
+        c.querySelector('.x').onclick = async ()=>{
+          try{ const res = await call('deleteSession',{logId:l.logId}); apply(res); toast('ลบแล้ว'); }catch(e){}
+        };
+        chips.appendChild(c);
+      });
+      wrap.appendChild(chips);
+    }
+    box.appendChild(wrap);
+    return box;
+  }
+
+  /* — ออกกำลังกาย (โควตาวัน/สัปดาห์) — */
+  if(r.type==='WEEKLY_QUOTA_DAYS'){
+    const wrap = el('<div style="width:100%"></div>');
+    const cur = logs.length ? Number(logs[0].value) : 0;
+    if(cur>=20){
+      const b=el('<button class="btn done wide">✓ วันนี้ออกกำลังกาย '+cur+' นาทีแล้ว</button>');
+      b.onclick=()=>tryUndo(r,0); wrap.appendChild(b);
+    }else{
+      let mins = 20;
+      const line = el('<div style="display:flex;gap:10px;align-items:center;width:100%"></div>');
+      const st = stepper(mins, 0, 300, 5, v=>{mins=v;});
+      const b = el('<button class="btn">บันทึก</button>');
+      b.onclick = async ()=>{
+        if(mins<20){ toast('ต้องอย่างน้อย 20 นาที ถึงจะนับเป็น 1 วัน'); }
+        await save(r, mins); toast('บันทึก '+mins+' นาที');
+      };
+      line.appendChild(st); line.appendChild(el('<span class="unit">นาที</span>')); line.appendChild(b);
+      wrap.appendChild(line);
+    }
+    const w = weekItem(r.ruleId);
+    if(w){
+      const dots = el('<div class="dots"></div>');
+      for(let i=0;i<Math.max(w.need, w.got, 1);i++) dots.appendChild(el('<div class="dot'+(i<w.got?' on':'')+'"></div>'));
+      dots.appendChild(el('<span class="unit" style="margin-left:6px">'+esc(w.detail)+'</span>'));
+      wrap.appendChild(dots);
+    }
+    box.appendChild(wrap);
+    return box;
+  }
+
+  /* — ตัวนับทั่วไป (น้ำหวาน ขนม บุฟเฟต์ เล่าเรื่อง) — */
+  const cur = logs.length ? Number(logs[0].value||0) : 0;
+  const wrap = el('<div style="width:100%"></div>');
+  const line = el('<div style="display:flex;gap:10px;align-items:center"></div>');
+  const st = stepper(cur, 0, 30, 1, async v=>{ await save(r, v); });
+  line.appendChild(st);
+  line.appendChild(el('<span class="unit">'+esc(r.unitLabel)+'วันนี้</span>'));
+  wrap.appendChild(line);
+
+  if(r.type==='WEEKLY_QUOTA_TIMES'){
+    const w = weekItem(r.ruleId);
+    if(w) wrap.appendChild(el('<div class="note">สัปดาห์นี้: '+esc(w.detail)+'</div>'));
+  }
+  if(r.type==='MONTHLY_COUNT'){
+    const m = (S.boot.month.items||[]).find(i=>i.ruleId===r.ruleId);
+    if(m) wrap.appendChild(el('<div class="note">เดือนนี้: '+esc(m.detail)+'</div>'));
+  }
+  box.appendChild(wrap);
+  return box;
+}
+
+function stepper(value, min, max, step, onChange){
+  const box = el('<div class="step"><button class="m">−</button><div class="n">'+value+'</div><button class="p">＋</button></div>');
+  const n = box.querySelector('.n');
+  let v = value, busy=false;
+  const set = async d=>{
+    if(busy) return;
+    const nv = Math.min(max, Math.max(min, v+d));
+    if(nv===v) return;
+    busy=true; const old=v; v=nv; n.textContent=v;
+    try{ await onChange(v); }catch(e){ v=old; n.textContent=v; }
+    busy=false;
+  };
+  box.querySelector('.m').onclick = ()=>set(-step);
+  box.querySelector('.p').onclick = ()=>set(step);
+  return box;
+}
+
+async function save(rule, value){
+  const res = await call('log', { ruleId: rule.ruleId, value: value });
+  apply(res);
+}
+async function tryUndo(rule, value){
+  try{ const res = await call('log', { ruleId: rule.ruleId, value: value }); apply(res); toast('ยกเลิกแล้ว'); }
+  catch(e){}
+}
+function apply(res){
+  S.boot.logs = res.logs; S.boot.day = res.day; S.boot.week = res.week; S.boot.month = res.month;
+  updateHeadFine(); renderToday();
+}
+
+function sessionSheet(r){
+  let g = 2;
+  const sheet = el('<div class="sheet"><div><h3>🥂 บันทึกวงที่ดื่ม</h3>'+
+    '<div class="mini">ดื่มเกิน '+r.limitValue+' '+r.unitLabel+'ต่อครั้ง ปรับ'+r.unitLabel+'ละ '+r.fineRate+' บาท</div>'+
+    '<div class="ctl" id="sBox"></div>'+
+    '<div class="row2" style="margin-top:14px"><button class="btn ghost" id="sX">ยกเลิก</button>'+
+    '<button class="btn" id="sOk">บันทึก</button></div></div></div>');
+  const st = stepper(g, 0, 30, 1, v=>{ g=v; });
+  sheet.querySelector('#sBox').appendChild(st);
+  sheet.querySelector('#sBox').appendChild(el('<span class="unit">'+esc(r.unitLabel)+'</span>'));
+  sheet.querySelector('#sX').onclick = ()=>sheet.remove();
+  sheet.querySelector('#sOk').onclick = async ()=>{
+    sheet.remove();
+    const res = await call('addSession',{ ruleId:r.ruleId, value:g }); apply(res);
+    toast(g>r.limitValue ? ('เกิน '+(g-r.limitValue)+' '+r.unitLabel+' → ปรับ '+((g-r.limitValue)*r.fineRate)+' บาท') : 'บันทึกแล้ว');
+  };
+  sheet.onclick = e=>{ if(e.target===sheet) sheet.remove(); };
+  document.body.appendChild(sheet);
+}
+
+/* ═══════════ แท็บ 2 : ย้อนหลัง ═══════════ */
+async function loadHistory(){
+  const res = await call('history', { month: S.histMonth, memberId: S.histMember });
+  S.hist = res;
+  if(S.boot.me.isAdmin){ try{ S.exList = (await call('listExemptions',{},true)).exemptions; }catch(e){} }
+  renderHistory();
+}
+
+function renderHistory(){
+  const box=$('#pgHistory'); box.innerHTML='';
+  const h=S.hist, b=S.boot;
+
+  // เลือกคน
+  if(b.members.length>1){
+    const seg = el('<div class="seg"></div>');
+    b.members.forEach(m=>{
+      const btn = el('<button class="'+(m.memberId===S.histMember?'on':'')+'">'+esc(m.name)+'</button>');
+      btn.onclick=()=>{ S.histMember=m.memberId; loadHistory(); };
+      seg.appendChild(btn);
+    });
+    box.appendChild(seg);
+  }
+
+  // ปฏิทิน
+  const card = el('<div class="card"></div>');
+  const nav = el('<div class="calnav"><button id="pm">‹</button><div class="m">'+thMonth(h.month)+
+    '</div><button id="nm">›</button></div>');
+  card.appendChild(nav);
+  const cal = el('<div class="cal"></div>');
+  ['จ','อ','พ','พฤ','ศ','ส','อา'].forEach(d=>cal.appendChild(el('<div class="dow">'+d+'</div>')));
+  const first = new Date(h.month+'-01T12:00:00');
+  let lead = first.getDay()===0 ? 6 : first.getDay()-1;
+  for(let i=0;i<lead;i++) cal.appendChild(el('<div class="cell empty"></div>'));
+  h.days.forEach(d=>{
+    const cls = d.exempt ? 'ex' : (d.total>0 ? 'bad':'ok');
+    const c = el('<div class="cell '+cls+(d.date===b.today?' today':'')+'">'+
+      '<div>'+(+d.date.slice(8))+'</div><div class="amt">'+(d.exempt?'ยกเว้น':(d.total?d.total+'฿':'✓'))+'</div></div>');
+    c.onclick = ()=>daySheet(d);
+    cal.appendChild(c);
+  });
+  card.appendChild(cal);
+  card.appendChild(el('<div class="note">🟩 ไม่โดนปรับ · 🟥 โดนปรับ · 🟦 ช่วงยกเว้น — แตะดูรายละเอียดได้ (แก้ไขไม่ได้)</div>'));
+  box.appendChild(card);
+  nav.querySelector('#pm').onclick = ()=>{ S.histMonth = shiftMonth(h.month,-1); loadHistory(); };
+  nav.querySelector('#nm').onclick = ()=>{ S.histMonth = shiftMonth(h.month, 1); loadHistory(); };
+
+  // สรุปเดือน
+  let sum = h.days.reduce((s,d)=>s+d.total,0);
+  Object.keys(h.weeks||{}).forEach(k=> sum += h.weeks[k].total);
+  sum += (h.month_ ? h.month_.total : 0);
+  box.appendChild(el('<div class="card"><div class="kv"><div class="k">ค่าปรับรวมเดือนนี้ (ของ '+
+    esc(memberName(S.histMember))+')</div><div class="v red">'+num(sum)+' บาท</div></div></div>'));
+
+  // แอดมิน: ช่วงยกเว้น
+  if(b.me.isAdmin) box.appendChild(exemptionPanel());
+}
+
+function shiftMonth(ym, d){
+  let y=+ym.slice(0,4), m=+ym.slice(5,7)+d;
+  if(m<1){m=12;y--;} if(m>12){m=1;y++;}
+  return y+'-'+String(m).padStart(2,'0');
+}
+function memberName(id){
+  const m=S.boot.members.find(x=>x.memberId===id); return m?m.name:id;
+}
+
+function daySheet(d){
+  const rows = (d.items||[]).map(i=>
+    '<div class="kv"><div class="k">'+i.icon+' '+esc(i.name)+'<div class="mini">'+esc(i.detail)+'</div></div>'+
+    '<div class="v '+(i.amount?'red':'green')+'">'+(i.amount?('+'+i.amount+' ฿'):'✓')+'</div></div>').join('');
+  const sheet = el('<div class="sheet"><div><h3>'+thDate(d.date)+'</h3>'+
+    (d.exempt?'<div class="exbar" style="margin-top:8px">🏷️ ยกเว้น: '+esc(d.exempt)+'</div>':'')+
+    rows+'<button class="btn ghost wide" style="margin-top:14px" id="cl">ปิด</button></div></div>');
+  sheet.querySelector('#cl').onclick=()=>sheet.remove();
+  sheet.onclick=e=>{ if(e.target===sheet) sheet.remove(); };
+  document.body.appendChild(sheet);
+}
+
+function exemptionPanel(){
+  const b=S.boot;
+  const opts = ['<option value="ALL">ทั้งคู่</option>'].concat(
+    b.members.map(m=>'<option value="'+m.memberId+'">'+esc(m.name)+'</option>')).join('');
+  const ruleOpts = ['<option value="ALL">ทุกข้อ</option>'].concat(
+    b.rules.map(r=>'<option value="'+r.ruleId+'">'+r.icon+' '+esc(r.name)+'</option>')).join('');
+  const card = el('<div class="card"><div class="h"><div class="ic">🏷️</div><div style="flex:1">'+
+    '<div class="t">ช่วงยกเว้นกฎ (แอดมิน)</div>'+
+    '<div class="s">เช่น ไปสัมมนา 2 วัน ให้เว้นกฎช่วงนั้น ต้องใส่เหตุผลทุกครั้ง</div></div></div>'+
+    '<div class="form">'+
+      '<div class="row2"><div><label>ตั้งแต่</label><input type="date" id="exS"></div>'+
+      '<div><label>ถึง</label><input type="date" id="exE"></div></div>'+
+      '<div class="row2"><div><label>ใคร</label><select id="exM">'+opts+'</select></div>'+
+      '<div><label>กฎข้อไหน</label><select id="exR">'+ruleOpts+'</select></div></div>'+
+      '<div><label>เหตุผล</label><input type="text" id="exReason" placeholder="เช่น ไปสัมมนาต่างจังหวัด"></div>'+
+      '<button class="btn wide" id="exAdd">เพิ่มช่วงยกเว้น</button>'+
+    '</div><div id="exList"></div></div>');
+
+  const t = S.boot.today;
+  card.querySelector('#exS').value = t; card.querySelector('#exE').value = t;
+  card.querySelector('#exAdd').onclick = async ()=>{
+    const p = {
+      startDate: card.querySelector('#exS').value,
+      endDate:   card.querySelector('#exE').value,
+      memberId:  card.querySelector('#exM').value,
+      ruleIds:   card.querySelector('#exR').value,
+      reason:    card.querySelector('#exReason').value.trim()
+    };
+    if(!p.reason){ toast('ใส่เหตุผลด้วยครับ'); return; }
+    try{ await call('addExemption', p); toast('เพิ่มช่วงยกเว้นแล้ว'); loadHistory(); }catch(e){}
+  };
+
+  const list = card.querySelector('#exList');
+  if(S.exList.length){
+    list.appendChild(el('<div class="sec" style="margin-left:0">ช่วงที่ตั้งไว้</div>'));
+    S.exList.slice().reverse().forEach(e=>{
+      const row = el('<div class="kv"><div class="k"><b style="color:var(--ink)">'+esc(e.reason)+'</b>'+
+        '<div class="mini">'+thDate(e.startDate)+' – '+thDate(e.endDate)+' · '+esc(e.memberName)+
+        ' · '+(String(e.ruleIds).toUpperCase()==='ALL'?'ทุกข้อ':esc(e.ruleIds))+'</div></div>'+
+        '<button class="btn sm ghost">ลบ</button></div>');
+      row.querySelector('button').onclick = async ()=>{
+        try{ await call('deleteExemption',{exId:e.exId}); toast('ลบแล้ว'); loadHistory(); }catch(err){}
+      };
+      list.appendChild(row);
+    });
+  }
+  return card;
+}
+
+/* ═══════════ แท็บ 3 : ค่าปรับ ═══════════ */
+async function loadFines(){
+  S.finesData = await call('finesReport', { scope: S.finesScope });
+  renderFines();
+}
+function renderFines(){
+  const box=$('#pgFines'); box.innerHTML='';
+  const d=S.finesData;
+
+  const seg = el('<div class="seg"></div>');
+  [['week','สัปดาห์นี้'],['lastweek','สัปดาห์ที่แล้ว'],['month','เดือนนี้'],['round','ทั้งรอบ']].forEach(([k,label])=>{
+    const b=el('<button class="'+(S.finesScope===k?'on':'')+'">'+label+'</button>');
+    b.onclick=()=>{ S.finesScope=k; loadFines(); };
+    seg.appendChild(b);
+  });
+  box.appendChild(seg);
+  box.appendChild(el('<div class="mini" style="margin:-4px 4px 10px">'+esc(d.label)+'</div>'));
+
+  const ruleName = id => { const r=d.rules.find(x=>x.ruleId===id); return r? r.icon+' '+r.name : id; };
+  let grand=0;
+
+  Object.keys(d.settled).forEach(id=>{
+    const p=d.settled[id], live=Number(d.live[id]||0), total=p.total+live;
+    grand+=total;
+    const rows = Object.keys(p.byRule).sort().map(rid=>
+      '<div class="kv"><div class="k">'+ruleName(rid)+'</div><div class="v red">'+num(p.byRule[rid])+' ฿</div></div>'
+    ).join('') || '<div class="mini" style="padding:8px 0">ยังไม่โดนปรับในงวดนี้ 🎉</div>';
+    box.appendChild(el('<div class="card"><div class="h"><div class="ic">'+(total?'😅':'😇')+'</div>'+
+      '<div style="flex:1"><div class="t">'+esc(p.name)+'</div>'+
+      '<div class="s">ปิดยอดแล้ว '+num(p.total)+' ฿'+(live?' · ยังไม่ปิดยอด '+num(live)+' ฿':'')+'</div></div>'+
+      '<div class="big" style="color:'+(total?'var(--red)':'#0B8043')+'">'+num(total)+'</div></div>'+
+      '<div style="margin-top:8px">'+rows+'</div></div>'));
+  });
+
+  box.appendChild(el('<div class="card"><div class="kv"><div class="k">รวมทั้งคู่</div>'+
+    '<div class="v red">'+num(grand)+' บาท</div></div>'+
+    '<div class="note">ยอด "ยังไม่ปิดยอด" คือของวันที่ระบบยังไม่ปิดรอบวัน (ปิดอัตโนมัติทุกวันตอนตี 5)</div></div>'));
+}
+
+/* ═══════════ แท็บ 4 : กองเงินทริป ═══════════ */
+async function loadFund(){
+  const res = await call('fund');
+  S.fund = res; renderFund();
+}
+function renderFund(){
+  const box=$('#pgFund'); box.innerHTML='';
+  const f=S.fund.fund, pays=S.fund.payments||[];
+
+  box.appendChild(el('<div class="card">'+
+    '<div class="h"><div class="ic">✈️</div><div style="flex:1"><div class="t">'+esc(f.round.tripName)+'</div>'+
+    '<div class="s">เริ่มเก็บ '+thDate(f.round.startDate)+'</div></div></div>'+
+    '<div class="big" style="margin-top:10px">'+num(f.totalPaid)+' <span style="font-size:14px;color:var(--muted);font-weight:600">/ '+num(f.round.goalAmount)+' บาท</span></div>'+
+    '<div class="bar"><div style="width:'+Math.max(2,f.percent)+'%"></div></div>'+
+    '<div class="kv"><div class="k">ความคืบหน้า</div><div class="v green">'+f.percent+'%</div></div>'+
+    '<div class="kv"><div class="k">ขาดอีก</div><div class="v">'+num(f.remaining)+' บาท</div></div>'+
+    '<div class="kv"><div class="k">ค่าปรับสะสม (ทั้งคู่)</div><div class="v">'+num(f.totalFines)+' บาท</div></div>'+
+    '<div class="kv"><div class="k">ค้างจ่ายเข้ากอง</div><div class="v amber">'+num(Math.max(0,f.outstanding))+' บาท</div></div>'+
+    (f.reached?'<div class="warnbar" style="margin-top:10px">🎉 ถึงเป้าแล้ว! ไปเที่ยวได้ แล้วเริ่มรอบใหม่ด้านล่าง</div>':'')+
+    '</div>'));
+
+  const per = el('<div class="card"><div class="sec" style="margin:0 0 6px">แยกรายคน</div></div>');
+  Object.keys(f.perMember).forEach(id=>{
+    const p=f.perMember[id];
+    per.appendChild(el('<div class="kv"><div class="k"><b style="color:var(--ink)">'+esc(p.name)+'</b>'+
+      '<div class="mini">โดนปรับ '+num(p.fines)+' · จ่ายแล้ว '+num(p.paid)+'</div></div>'+
+      '<div class="v '+(p.outstanding>0?'amber':'green')+'">'+
+      (p.outstanding>0?('ค้าง '+num(p.outstanding)):'เคลียร์แล้ว')+'</div></div>'));
+  });
+  box.appendChild(per);
+
+  // จ่ายเงินเข้ากอง
+  const meOut = f.perMember[S.boot.me.memberId] ? Math.max(0, f.perMember[S.boot.me.memberId].outstanding) : 0;
+  const pay = el('<div class="card"><div class="t">💰 บันทึกจ่ายเข้ากอง</div>'+
+    '<div class="s">ใส่ยอดที่โอนเข้ากองจริง (จ่ายค่าปรับ หรือฝากเพิ่มก็ได้)</div>'+
+    '<div class="form"><div class="row2">'+
+    '<div><label>จำนวนเงิน (บาท)</label><input type="number" inputmode="numeric" id="pAmt" value="'+(meOut||'')+'" placeholder="0"></div>'+
+    '<div><label>หมายเหตุ</label><input type="text" id="pNote" placeholder="เคลียร์ค่าปรับสัปดาห์นี้"></div>'+
+    '</div><button class="btn wide" id="pOk">บันทึก</button></div></div>');
+  pay.querySelector('#pOk').onclick = async ()=>{
+    const amt = Number(pay.querySelector('#pAmt').value||0);
+    if(!(amt>0)){ toast('ใส่จำนวนเงินก่อนครับ'); return; }
+    try{
+      const res = await call('addPayment',{ amount:amt, note:pay.querySelector('#pNote').value });
+      S.fund=res; renderFund(); toast('บันทึก '+num(amt)+' บาท เข้ากองแล้ว 🎉');
+    }catch(e){}
+  };
+  box.appendChild(pay);
+
+  if(pays.length){
+    const list = el('<div class="card"><div class="sec" style="margin:0 0 6px">ประวัติเงินเข้ากอง</div></div>');
+    pays.forEach(p=>{
+      const row = el('<div class="kv"><div class="k"><b style="color:var(--ink)">'+esc(p.memberName)+'</b>'+
+        '<div class="mini">'+thDate(p.date)+(p.note?' · '+esc(p.note):'')+'</div></div>'+
+        '<div style="display:flex;align-items:center;gap:8px"><div class="v green">+'+num(p.amount)+'</div></div></div>');
+      if(S.boot.me.isAdmin){
+        const del = el('<button class="btn sm ghost">ลบ</button>');
+        del.onclick = async ()=>{ try{ const r=await call('deletePayment',{payId:p.payId}); S.fund=r; renderFund(); }catch(e){} };
+        row.lastElementChild.appendChild(del);
+      }
+      list.appendChild(row);
+    });
+    box.appendChild(list);
+  }
+
+  if(S.boot.me.isAdmin){
+    const adm = el('<div class="card"><div class="t">⚙️ ตั้งค่ารอบ (แอดมิน)</div>'+
+      '<div class="form"><div class="row2">'+
+      '<div><label>ชื่อทริป</label><input type="text" id="rName" value="'+esc(f.round.tripName)+'"></div>'+
+      '<div><label>เป้าหมาย (บาท)</label><input type="number" inputmode="numeric" id="rGoal" value="'+f.round.goalAmount+'"></div>'+
+      '</div><button class="btn ghost wide" id="rSave">บันทึกการแก้ไข</button>'+
+      '<button class="btn wide" id="rClose" style="background:var(--amber)">🏁 ปิดรอบนี้ &amp; เริ่มรอบใหม่</button>'+
+      '<div class="note">ปิดรอบแล้วยอดเดิมจะถูกเก็บไว้เป็นประวัติ แล้วเริ่มนับใหม่จาก 0</div></div></div>');
+    adm.querySelector('#rSave').onclick = async ()=>{
+      try{
+        const res = await call('updateRound',{ tripName: adm.querySelector('#rName').value,
+                                               goalAmount: Number(adm.querySelector('#rGoal').value) });
+        S.fund.fund = res.fund; renderFund(); toast('บันทึกแล้ว');
+      }catch(e){}
+    };
+    adm.querySelector('#rClose').onclick = ()=>{
+      const sheet = el('<div class="sheet"><div><h3>🏁 เริ่มรอบใหม่</h3>'+
+        '<div class="mini">รอบเดิม "'+esc(f.round.tripName)+'" จะถูกปิดที่ยอด '+num(f.totalPaid)+' บาท</div>'+
+        '<div class="form"><div><label>ชื่อทริปรอบใหม่</label><input type="text" id="nName" placeholder="เช่น ทริปญี่ปุ่น"></div>'+
+        '<div><label>เป้าหมายใหม่ (บาท)</label><input type="number" id="nGoal" value="'+f.round.goalAmount+'"></div>'+
+        '<div class="row2"><button class="btn ghost" id="nX">ยกเลิก</button><button class="btn" id="nOk">เริ่มรอบใหม่</button></div>'+
+        '</div></div></div>');
+      sheet.querySelector('#nX').onclick=()=>sheet.remove();
+      sheet.querySelector('#nOk').onclick=async ()=>{
+        const nm = sheet.querySelector('#nName').value.trim();
+        const gl = Number(sheet.querySelector('#nGoal').value||0);
+        if(!nm){ toast('ตั้งชื่อทริปใหม่ก่อนครับ'); return; }
+        sheet.remove();
+        try{ const res = await call('closeRound',{ tripName:nm, goalAmount:gl });
+             S.fund.fund=res.fund; loadFund(); toast('เริ่มรอบใหม่แล้ว 🎉'); }catch(e){}
+      };
+      sheet.onclick=e=>{ if(e.target===sheet) sheet.remove(); };
+      document.body.appendChild(sheet);
+    };
+    box.appendChild(adm);
+  }
+}
+</script>
+</body>
+</html>
