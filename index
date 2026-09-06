@@ -133,8 +133,8 @@ input,select{font-family:inherit;font-size:15px}
 
 <!-- ╔══════ ตั้งค่า 2 บรรทัดนี้ก่อนใช้งาน ══════╗ -->
 <script>
-  const LIFF_ID = 'ใส่_LIFF_ID_ตรงนี้';                 // เช่น 2001234567-AbCdEfGh
-  const API_URL = 'ใส่_URL_ของ_APPS_SCRIPT_ตรงนี้';      // เช่น https://script.google.com/macros/s/AKfy.../exec
+  const LIFF_ID = '2011461253-r46VOLZC';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbw72df2oQGi3IS1y41PchxaR74Iagma9L4G9i5Be_zQMLaXjI2AMOlfclghAHnjmGcE/exec';
 </script>
 <!-- ╚═════════════════════════════════════════╝ -->
 
